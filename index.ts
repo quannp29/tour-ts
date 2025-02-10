@@ -1,7 +1,8 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import sequelize from "./config/database";
+import clientRoutes from "./routes/client/index.route";
 
 sequelize;
 
@@ -11,9 +12,7 @@ const port: (number | string) = `${process.env.PORT}` || 3000;
 app.set("views", "./views");
 app.set("view engine", "pug");
 
-app.get("/tours", (req: Request, res: Response) => {
-  res.render("client/pages/tours/index");
-});
+clientRoutes(app);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
