@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database";
+import slugify from "slugify";
+import Category from "./category.model";
 
 const Tour = sequelize.define("Tour", {
   id: {
@@ -56,6 +58,13 @@ const Tour = sequelize.define("Tour", {
 }, {
   tableName: "tours",
   timestamps: true
+});
+
+Tour.beforeCreate((tour) => {
+  tour["slug"] = slugify(`${tour["title"]}-${Date.now()}`, {
+    lower: true,
+    strict: true
+  });
 });
 
 export default Tour;
