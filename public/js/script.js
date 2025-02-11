@@ -145,24 +145,24 @@ const drawCart = () => {
 // Cập nhật số lượng trong giỏ hàng
 const updateQuantityInCart = () => {
   const listInputQuantity = document.querySelectorAll("input[name='quantity']");
-  if(listInputQuantity.length > 0) {
-    listInputQuantity.forEach(input => {
+  if (listInputQuantity.length > 0) {
+    listInputQuantity.forEach((input) => {
       input.addEventListener("change", () => {
         const quantity = parseInt(input.value);
         const tourId = input.getAttribute("item-id");
 
         const cart = JSON.parse(localStorage.getItem("cart"));
-        const tourUpdate = cart.find(item => item.tourId == tourId);
-        if(tourUpdate) {
+        const tourUpdate = cart.find((item) => item.tourId == tourId);
+        if (tourUpdate) {
           tourUpdate.quantity = quantity;
           localStorage.setItem("cart", JSON.stringify(cart));
 
           drawCart();
-        }            
-      })
-    })
+        }
+      });
+    });
   }
-}
+};
 // End Cập nhật số lượng trong giỏ hàng
 
 // Xóa sản phẩm trong giỏ
@@ -184,3 +184,44 @@ const deleteItemInCart = () => {
 // End Xóa sản phẩm trong giỏ
 
 drawCart();
+
+// Make Order
+const formOrder = document.querySelector("[form-order]");
+if (formOrder) {
+  formOrder.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const fullName = formOrder.fullName.value;
+    const phone = formOrder.phone.value;
+    const note = formOrder.note.value;
+
+    const cart = JSON.parse(localStorage.getItem("cart"));
+
+    const dataFinal = {
+      info: {
+        fullName: fullName,
+        phone: phone,
+        note: note,
+      },
+      cart: cart,
+    };
+
+    fetch("/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataFinal),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if(data.code == 200) {
+          localStorage.setItem("cart", JSON.stringify([]));
+          window.location.href = `/order/success?orderCode=${data.orderCode}`;
+        } else {
+          alert("Đặt hàng không thành công!");
+        }
+      });
+  });
+}
+// End Make Order
