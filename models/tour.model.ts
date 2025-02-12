@@ -46,7 +46,7 @@ const Tour = sequelize.define("Tour", {
   },
   slug: {
     type: DataTypes.STRING(255),
-    allowNull: false
+    allowNull: true
   },
   deleted: {
     type: DataTypes.BOOLEAN,
